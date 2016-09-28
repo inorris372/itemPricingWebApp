@@ -4,7 +4,7 @@ from flask import request
 from flask import session
 from flask import url_for
 from werkzeug.utils import redirect
-
+from src.models.users.errors import UserErrors
 from src.models.users.user import User
 
 __author__ = 'Ian'
@@ -19,21 +19,35 @@ def login_user():
         email = request.form['email']
         password = request.form['password']
 
-        if User.validate_login(email, password):
-            session['email'] = email
-            return redirect(url_for(".user_alerts"))
+        try:
+            if User.validate_login(email, password):
+                session['email'] = email
+                return redirect(url_for(".user_alerts"))
+        except UserErrors as e:
+            return e.message
 
     return render_template("users/login.html") # send the user an error if their login was invalid
 
 
-@user_blueprint.route('/register')
+@user_blueprint.route('/register', methods=['GET','POST'])
 def register_user():
-    pass
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['hashed']
+
+        try:
+            if User.register_user(email, password):
+                session['email'] = email
+                return redirect(url_for(".user_alerts"))
+        except UserErrors as e:
+            return e.message
+
+    return render_template("users/register.html") # send the user an error if their login was invalid
 
 
 @user_blueprint.route('/alerts')
 def user_alerts():
-    pass
+    return "This is the alerts page."
 
 
 @user_blueprint.route('/logout')
