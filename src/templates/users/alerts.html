@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+    <div class="page-header">
+        <h1>Alerts<small>showing already existing alerts</small></h1>
+    </div>
+    <div class="list-group">
+    {% for alert in alerts %}
+        <a href="#" class="list-group-item">
+            <h4 class="list-group-item-heading">Alert for {{ alert.item.name }}</h4>
+            <p class="list-group-item-text">Last price found {{ alert.item.price }}</p>
+        </a>
+    {% endfor %}
+    </div>
+{% endblock %}

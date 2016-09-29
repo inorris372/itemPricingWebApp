@@ -1,0 +1,13 @@
+.form-size {
+    max-width: 480px;
+    margin: 0 auto;
+
+    background-color: #E9E9E9
+    padding: 10px;
+
+    border: 1px solid #F5F5F5;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    border-radius: 7px;
+
+}
