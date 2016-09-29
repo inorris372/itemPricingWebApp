@@ -1,4 +1,7 @@
+__author__ = 'Ian'
+
+
 DEBUG = True
 ADMINS = frozenset([
-    "yourname@yourdomain.com"
+    "inorris372@gmail.com"
 ])

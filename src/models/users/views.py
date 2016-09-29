@@ -6,6 +6,7 @@ from flask import url_for
 from werkzeug.utils import redirect
 from src.models.users.errors import UserErrors
 from src.models.users.user import User
+import src.models.users.decorators as user_decorators
 
 __author__ = 'Ian'
 
@@ -46,6 +47,7 @@ def register_user():
 
 
 @user_blueprint.route('/alerts')
+@user_decorators.requires_login
 def user_alerts():
     user = User.find_by_email(session['email'])
     alerts = user.get_alerts()

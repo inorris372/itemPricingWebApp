@@ -11,7 +11,7 @@ __author__ = 'Ian'
 
 
 class Item(object):
-    def __init__(self, name, url, price, _id=None):
+    def __init__(self, name, url, price=None, _id=None):
         self.name = name
         self.url = url
         store = Store.find_by_url(url)
