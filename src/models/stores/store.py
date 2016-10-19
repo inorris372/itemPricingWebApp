@@ -27,7 +27,7 @@ class Store(object):
         }
 
     @classmethod
-    def get_by_id(cls):
+    def get_by_id(cls, id):
         return cls(**Database.find_one(StoreConstants.COLLECTION,{"_id": id}))
 
     def save_to_mongo(self):

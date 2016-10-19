@@ -18,7 +18,7 @@
                 <input type="text" class="form-control" id="price_limit" name="price_limit" placeholder="40.0" aria-describedby="priceLimitBlock">
                 <p id="priceLimitBlock" class="help-block">We'll send you an e-mail when the price reaches or goes under the above price.</p>
             </div>
-            <button type="submit" class="btn btn-default">Create</button>
+            <a type="submit" class="btn btn-default" href="{{ url_for('users.user_alerts') }}" >Create</a>
         </form>
     </div>
 {% endblock %}

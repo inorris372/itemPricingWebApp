@@ -5,8 +5,8 @@ from src.common.database import Database
 from src.common.utils import Utils
 from src.models.alerts.alert import Alert
 
-__author__ = 'Ian'
 
+__author__ = 'Ian'
 
 
 class User(object):
@@ -28,49 +28,49 @@ class User(object):
         :param password: A sha512 hashed password
         :return: True if valid, False otherwise
         """
-
+        hashed_password = Utils.hash_password(password).hexdigest()
         user_data = Database.find_one(UserConstants.COLLECTION, {"email": email})
         if user_data is None:
             raise UserErrors.UserNonexistentError("Your user does not exist.")
-        if not Utils.check_hashed_password(password, user_data['password']):
+        if not Utils.check_encrypted_password(hashed_password, user_data['password']):
             raise UserErrors.IncorrectPasswordError("Your password is wrong.")
 
         return True
 
-    if __name__ == '__main__':
-        @staticmethod
-        def register_user(email, password):
-            """
-            This method registers a user using e-mail and password.
-            The password already comes hashed as sha-512.
-            :param email: user's e-mail (might be invalid)
-            :param password: sha512-hashed password
-            :return: True if registered successfully, or False otherwise (exceptions can also be raised)
-            """
-            user_data = Database.find_one(UserConstants.COLLECTION, {"email": email})
+    # if __name__ == '__main__':
+    @staticmethod
+    def register_user(email, password):
+        """
+        This method registers a user using e-mail and password.
+        The password already comes hashed as sha-512.
+        :param email: user's e-mail (might be invalid)
+        :param password: sha512-hashed password
+        :return: True if registered successfully, or False otherwise (exceptions can also be raised)
+        """
+        user_data = Database.find_one(UserConstants.COLLECTION, {"email": email})
+        hashed_password = Utils.hash_password(password)
+        if user_data is not None:
+            raise UserErrors.UserAlreadyRegisteredError("The e-mail you used to register already exists.")
+        if not Utils.email_is_valid(email):
+            raise UserErrors.InvalidEmailError("The e-mail does not have the right format.")
 
-            if user_data is not None:
-                raise UserErrors.UserAlreadyRegisteredError("The e-mail you used to register already exists.")
-            if not Utils.email_is_valid(email):
-                raise UserErrors.InvalidEmailError("The e-mail does not have the right format.")
+        User(email, Utils.encrypt_password(hashed_password)).save_to_db()
 
-            User(email, Utils.hash_password(password)).save_to_db()
+        return True
 
-            return True
+    def save_to_db(self):
+        Database.insert(UserConstants.COLLECTION, self.json())
 
-        def save_to_db(self):
-            Database.insert(UserConstants.COLLECTION, self.json())
+    def json(self):
+        return {
+            "_id": self._id,
+            "email": self.email,
+            "password": self.password
+        }
 
-        def json(self):
-            return {
-                "_id": self._id,
-                "email": self.email,
-                "password": self.password
-            }
+    @classmethod
+    def find_by_email(cls, email):
+        return cls(**Database.find_one('users', {'email': email}))
 
-        @classmethod
-        def find_by_email(cls, email):
-            return cls(**Database.find_one('users', {'email': email}))
-
-        def get_alerts(self):
-            return Alert.find_by_user_email(self.email)
+    def get_alerts(self):
+        return Alert.find_by_user_email(self.email)
